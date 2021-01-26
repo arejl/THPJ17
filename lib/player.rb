@@ -9,7 +9,10 @@ class Player
   end
 
   def show_state
-    if @life_points <= 1
+    case
+    when @life_points <= 0
+      puts "#{@name} est KO !"
+    when @life_points == 1
       puts "#{@name} a #{@life_points} point de vie"
     else
       puts "#{@name} a #{@life_points} points de vie"
@@ -49,7 +52,10 @@ class HumanPlayer < Player
   end
 
   def show_state
-    if @life_points <= 1
+    case
+    when @life_points <= 0
+      puts "#{@name} est KO !"
+    when @life_points == 1
       puts "#{@name} a #{@life_points} point de vie et une arme de niveau #{@weapon_level}"
     else
       puts "#{@name} a #{@life_points} points de vie et une arme de niveau #{@weapon_level}"

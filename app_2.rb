@@ -13,7 +13,7 @@ def intro
   puts "|Bienvenue sur 'ILS VEULENT TOUS MA POO' !      |"
   puts "|Le but du jeu est d'être le dernier survivant !|"
   puts "-------------------------------------------------"
-  puts "Quel est ton prénom ?"
+  puts "C'est moi, le prof. CHEN ! Comment t'appelles-tu déjà ?"
   print ">"
   given_name = gets.chomp
   return $user = HumanPlayer.new(given_name)
@@ -39,17 +39,24 @@ end
 
 def user_decision
   puts
-  case $answer
-  when "a" || "A"
-    $user.search_weapon
-  when "s" || "S"
-    $user.search_health_pack
-  when "0"
-    $user.attacks($enemies[0])
-  when "1"
-    $user.attacks($enemies[1])
-  else
-    puts "Entre une réponse valide stp"
+  loop do
+    menu
+    case $answer
+    when "a" || "A"
+      $user.search_weapon
+      break
+    when "s" || "S"
+      $user.search_health_pack
+      break
+    when "0"
+      $user.attacks($enemies[0])
+      break
+    when "1"
+      $user.attacks($enemies[1])
+      break
+    else
+      puts "Entre une réponse valide stp"
+    end
   end
 end
 
@@ -78,9 +85,12 @@ end
 def game
   intro
   while $user.life_points > 0 && ($enemy1.life_points > 0 || $enemy2.life_points > 0)
-    menu
     user_decision
+    puts "------------------------------------------------"
+    sleep(1)
     enemy_attack
+    puts "------------------------------------------------"
+    sleep(1)
   end
   end_game
 end
