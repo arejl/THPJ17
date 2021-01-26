@@ -43,23 +43,34 @@ class Game
   end
 
   def menu_choice
-    print ">"
-    choice = gets.chomp
-    puts
-    (0..@enemies.size - 1).each do |i|
-      if choice == "#{i}"
-        @human_player.attacks(@enemies[i])
-        if @enemies[i].life_points <= 0
-          kill_player(@enemies[i].name)
+    loop do
+      control = 0 #Cette variable va servir à proposer à nouveau le menu si l'utilisateur n'a pas rentré de valeur acceptable.
+      print ">"
+      choice = gets.chomp
+      puts
+      (0..@enemies.size - 1).each do |i|
+        if choice == "#{i}"
+          @human_player.attacks(@enemies[i])
+          control += 1
+          if @enemies[i].life_points <= 0
+            kill_player(@enemies[i].name)
+          end
+        elsif choice == "a" || choice == "A"
+          @human_player.search_weapon
+          control += 1
+          break #On rajoute des break pour sortir du each si le choix de l'utilisateur est a ou s
+        elsif choice == "s" || choice == "S"
+          @human_player.search_health_pack
+          control += 1
+          break
+        else
+          next
         end
-      elsif choice == "a" || choice == "A"
-        @human_player.search_weapon
-        break
-      elsif choice == "s" || choice == "S"
-        @human_player.search_health_pack
-        break
+      end
+      if control == 0
+        puts "Entre un choix valide stp" #Retour au début de la loop si l'utilisateur a donné une valeur qui n'est pas dans le menu
       else
-        next
+        break
       end
     end
   end
@@ -69,7 +80,11 @@ class Game
     if @enemies.size > 0
       puts "Les autres joueurs attaquent !"
       @enemies.each do |enemy|
-        enemy.attacks(@human_player)
+        if @human_player.life_points > 0
+          enemy.attacks(@human_player)
+        else
+          break #Si le joueur n'a plus de vie, le reste des ennemis n'attaque pas.
+        end
       end
     else
       puts "Il n'y a plus d'autre joueur en vie !"

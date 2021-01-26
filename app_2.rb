@@ -39,7 +39,7 @@ end
 
 def user_decision
   puts
-  loop do
+  loop do #Cette loop sert à revenir au début si l'utilisateur n'a pas rentré de réponse valide.
     menu
     case $answer
     when "a" || "A"
