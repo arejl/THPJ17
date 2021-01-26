@@ -12,8 +12,8 @@ class Game
     end
   end
 
-  def kill_player(player_name)
-    @enemies.delete_if { |enemy| enemy.name == player_name }
+  def kill_player
+    @enemies.delete_if { |enemy| enemy.life_points <= 0 }
   end
 
   def is_still_ongoing?
@@ -53,7 +53,7 @@ class Game
           @human_player.attacks(@enemies[i])
           control += 1
           if @enemies[i].life_points <= 0
-            kill_player(@enemies[i].name)
+            self.kill_player
           end
         elsif choice == "a" || choice == "A"
           @human_player.search_weapon
