@@ -1,0 +1,86 @@
+require "pry"
+require_relative "player"
+
+class Game
+  attr_accessor :human_player, :enemies
+
+  def initialize(given_name)
+    @human_player = HumanPlayer.new(given_name)
+    @enemies = Array.new
+    4.times do |i|
+      @enemies << Player.new("Joueur #{i + 1}")
+    end
+  end
+
+  def kill_player(player_name)
+    @enemies.delete_if { |enemy| enemy.name == player_name }
+  end
+
+  def is_still_ongoing?
+    @human_player.life_points > 0 && @enemies.size > 0
+  end
+
+  def show_players
+    @human_player.show_state
+    if @enemies.size == 1
+      puts "Il reste #{@enemies.size} joueur à combattre"
+    else
+      puts "Il reste #{@enemies.size} joueurs à combattre"
+    end
+  end
+
+  def menu
+    puts
+    puts "Quelle action veux-tu effectuer ?"
+    puts "a - chercher une meilleure arme"
+    puts "s - chercher à se soigner"
+    puts
+    puts "attaquer un joueur en vue :"
+    @enemies.each_with_index do |enemy, index|
+      print "#{index} - "
+      enemy.show_state
+    end
+  end
+
+  def menu_choice
+    print ">"
+    choice = gets.chomp
+    puts
+    (0..@enemies.size - 1).each do |i|
+      if choice == "#{i}"
+        @human_player.attacks(@enemies[i])
+        if @enemies[i].life_points <= 0
+          kill_player(@enemies[i].name)
+        end
+      elsif choice == "a" || choice == "A"
+        @human_player.search_weapon
+        break
+      elsif choice == "s" || choice == "S"
+        @human_player.search_health_pack
+        break
+      else
+        next
+      end
+    end
+  end
+
+  def enemies_attack
+    puts
+    if @enemies.size > 0
+      puts "Les autres joueurs attaquent !"
+      @enemies.each do |enemy|
+        enemy.attacks(@human_player)
+      end
+    else
+      puts "Il n'y a plus d'autre joueur en vie !"
+    end
+  end
+
+  def end
+    if @human_player.life_points > 0
+      puts "Bravo ! Tu as gagné !"
+    else
+      puts "Tu as perdu..."
+    end
+  end
+end
